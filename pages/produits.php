@@ -2,7 +2,7 @@
 require_once '../config.php';
 requireLogin();
 
-$uploadDir = '../assets/img/produits/';
+$uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/StockSmart/assets/img/produits/';
 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
 $success = null;
@@ -62,11 +62,11 @@ if (isset($_GET['edit'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventaire — StockSmart Pro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--red:#e94560;--mid:#64748b;--border:#e2e8f0;--light:#f8fafc;}
-    body{font-family:'Inter',system-ui,sans-serif;background:var(--light);color:#0d1117;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--light);color:#0d1117;}
     .container{max-width:1300px;margin:2rem auto;padding:0 2rem;}
     .page-title{font-size:20px;font-weight:800;margin-bottom:1.5rem;}
     .msg-success{background:#dcfce7;color:#166534;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:1.5rem;border:1px solid #bbf7d0;}
@@ -93,14 +93,11 @@ if (isset($_GET['edit'])) {
     tbody tr:last-child{border-bottom:none;}
     tbody tr:hover{background:#fafbff;}
     tbody td{padding:12px 14px;font-size:13px;vertical-align:middle;}
-
-    /* ── Photo avec skeleton loader ── */
     .img-wrap{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden;background:#f1f5f9;border:1px solid var(--border);}
-    .img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.6) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 1.2s infinite;opacity:1;transition:opacity .3s;}
-    .img-wrap.loaded::after{opacity:0;pointer-events:none;}
+    .img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);background-size:200% 100%;animation:shimmer 1.2s infinite;opacity:1;transition:opacity .3s;}
+    .img-wrap.loaded::after{opacity:0;}
     @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
     .prod-img{width:52px;height:52px;object-fit:contain;padding:4px;display:block;}
-
     .prod-name{font-size:13px;font-weight:700;}
     .prod-ref{font-size:11px;color:var(--mid);margin-top:2px;}
     .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700;}
@@ -109,7 +106,7 @@ if (isset($_GET['edit'])) {
     .badge-crit{background:#fee2e2;color:#991b1b;}
     .stock-bw{width:60px;height:4px;background:#f0f0f0;border-radius:2px;margin-top:4px;}
     .stock-bf{height:4px;border-radius:2px;}
-    .btn-sm{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+    .btn-sm{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
     .btn-edit{background:#ede9fe;color:#5b21b6;}
     .btn-delete{background:#fee2e2;color:#991b1b;}
   </style>
@@ -128,7 +125,7 @@ if (isset($_GET['edit'])) {
     <h3><?= $edit_p ? 'Modifier le produit' : 'Nouveau produit' ?></h3>
     <div class="off-tip">
       <svg viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <span><strong>Photo automatique :</strong> renseignez le <strong>Nom</strong> et la <strong>Marque</strong> — la photo du vrai paquet sera récupérée automatiquement.</span>
+      <span><strong>Photo automatique :</strong> renseignez le <strong>Nom</strong> et la <strong>Marque</strong> — la photo sera récupérée automatiquement via Open Food Facts.</span>
     </div>
     <form method="POST" enctype="multipart/form-data">
       <?php if ($edit_p): ?>
@@ -138,7 +135,7 @@ if (isset($_GET['edit'])) {
       <div class="form-grid">
         <div class="fg"><label>Référence *</label><input type="text" name="reference" value="<?= h($edit_p['reference'] ?? '') ?>" placeholder="P001" required></div>
         <div class="fg"><label>Nom du produit *</label><input type="text" name="nom" value="<?= h($edit_p['nom'] ?? '') ?>" placeholder="Jus Orange 1L" required></div>
-        <div class="fg"><label>Marque </label><input type="text" name="marque" value="<?= h($edit_p['marque'] ?? '') ?>" placeholder="Tropicana, Herta..."></div>
+        <div class="fg"><label>Marque</label><input type="text" name="marque" value="<?= h($edit_p['marque'] ?? '') ?>" placeholder="Tropicana, Herta..."></div>
         <div class="fg"><label>Fournisseur</label><input type="text" name="fournisseur" value="<?= h($edit_p['fournisseur'] ?? '') ?>"></div>
         <div class="fg">
           <label>Catégorie *</label>
@@ -155,7 +152,9 @@ if (isset($_GET['edit'])) {
         <div class="fg"><label>Photo manuelle</label><input type="file" name="image" accept="image/*"></div>
       </div>
       <div class="form-actions">
-        <button type="submit" name="<?= $edit_p ? 'modifier' : 'ajouter' ?>" class="btn btn-red"><?= $edit_p ? 'Enregistrer' : 'Ajouter' ?></button>
+        <button type="submit" name="<?= $edit_p ? 'modifier' : 'ajouter' ?>" class="btn btn-red">
+          <?= $edit_p ? 'Enregistrer' : 'Ajouter le produit' ?>
+        </button>
         <?php if ($edit_p): ?><a href="produits.php" class="btn btn-gray">Annuler</a><?php endif; ?>
       </div>
     </form>
@@ -163,13 +162,23 @@ if (isset($_GET['edit'])) {
   <?php endif; ?>
 
   <div class="search-row">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un produit...">
+    <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un produit...">
     <span style="font-size:13px;color:var(--mid);"><?= count($produits) ?> produit(s)</span>
   </div>
 
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Photo</th><th>Produit</th><th>Catégorie</th><th>Stock</th><th>Niveau</th><th>Prix</th><th style="text-align:right;">Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Stock</th>
+          <th>Niveau</th>
+          <th>Prix</th>
+          <th style="text-align:right;">Actions</th>
+        </tr>
+      </thead>
       <tbody id="productTable">
         <?php foreach ($produits as $p):
           $searchTerm = trim(($p['marque'] ?? '') . ' ' . $p['nom']);
@@ -180,7 +189,6 @@ if (isset($_GET['edit'])) {
         ?>
         <tr class="product-row">
           <td>
-            <!-- data-search déclenche le script OFF automatiquement -->
             <div class="img-wrap <?= $hasLocal ? 'loaded' : '' ?>" id="wrap_<?= $p['id'] ?>">
               <img
                 class="prod-img"
@@ -195,15 +203,29 @@ if (isset($_GET['edit'])) {
             <div class="prod-ref"><?= h($p['reference']) ?><?= !empty($p['marque']) ? ' · '.h($p['marque']) : '' ?></div>
           </td>
           <td style="font-weight:600;"><?= h($p['cat_nom'] ?? '—') ?></td>
-          <td><span class="badge <?= $p['quantite']==0?'badge-crit':($p['quantite']<=$p['seuil_alerte']?'badge-warn':'badge-ok') ?>"><?= $p['quantite'] ?> en stock</span></td>
           <td>
-            <div class="stock-bw"><div class="stock-bf" style="width:<?= $p['seuil_alerte']>0?min(100,round(($p['quantite']/$p['seuil_alerte'])*100)):100 ?>%;background:<?= $p['quantite']==0?'#e94560':($p['quantite']<=$p['seuil_alerte']?'#f59e0b':'#22c55e') ?>;"></div></div>
+            <span class="badge <?= $p['quantite']==0?'badge-crit':($p['quantite']<=$p['seuil_alerte']?'badge-warn':'badge-ok') ?>">
+              <?= $p['quantite'] ?> en stock
+            </span>
+          </td>
+          <td>
+            <div class="stock-bw">
+              <div class="stock-bf" style="width:<?= $p['seuil_alerte']>0?min(100,round(($p['quantite']/$p['seuil_alerte'])*100)):100 ?>%;background:<?= $p['quantite']==0?'#e94560':($p['quantite']<=$p['seuil_alerte']?'#f59e0b':'#22c55e') ?>;"></div>
+            </div>
             <div style="font-size:10px;color:var(--mid);margin-top:2px;">seuil: <?= $p['seuil_alerte'] ?></div>
           </td>
           <td style="font-weight:700;"><?= number_format($p['prix'],2,',',' ') ?> €</td>
           <td style="text-align:right;">
-            <?php if (canEdit()): ?><a href="?edit=<?= $p['id'] ?>" class="btn-sm btn-edit">Modifier</a><?php endif; ?>
-            <?php if (canDelete()): ?><a href="?supprimer=<?= $p['id'] ?>" class="btn-sm btn-delete" onclick="return confirm('Supprimer <?= h($p['nom']) ?> ?')"></a><?php endif; ?>
+            <?php if (canEdit()): ?>
+              <a href="?edit=<?= $p['id'] ?>" class="btn-sm btn-edit">✏️ Modifier</a>
+            <?php endif; ?>
+            <?php if (canDelete()): ?>
+              <a href="?supprimer=<?= $p['id'] ?>"
+                 class="btn-sm btn-delete"
+                 onclick="return confirm('Supprimer <?= h($p['nom']) ?> ?')">
+                🗑️ Supprimer
+              </a>
+            <?php endif; ?>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -217,58 +239,58 @@ if (isset($_GET['edit'])) {
 
 <footer style="text-align:center;padding:2rem;color:#94a3b8;font-size:12px;">© <?= date('Y') ?> StockSmart Pro</footer>
 
-<!-- ═══ OPEN FOOD FACTS AUTO PHOTO ═══ -->
 <script src="../js/script.js"></script>
 <script>
 const OFF_CACHE = {};
 
 async function loadProductPhoto(img) {
-  const search  = img.getAttribute('data-search');
-  const wrapId  = img.getAttribute('data-wrapid');
-  const wrap    = wrapId ? document.getElementById(wrapId) : null;
+  const search = img.getAttribute('data-search');
+  const wrapId = img.getAttribute('data-wrapid');
+  const wrap   = wrapId ? document.getElementById(wrapId) : null;
   if (!search) return;
 
+  img.setAttribute('data-current', search);
+
   try {
-    // Chercher dans le cache mémoire d'abord
     if (OFF_CACHE[search]) {
       img.src = OFF_CACHE[search];
       if (wrap) wrap.classList.add('loaded');
       return;
     }
+    const data = await fetch(
+      'https://world.openfoodfacts.org/cgi/search.pl?search_terms='
+      + encodeURIComponent(search)
+      + '&search_simple=1&action=process&json=1&page_size=5'
+    ).then(r => r.json());
 
-    const url  = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(search)}&search_simple=1&action=process&json=1&page_size=5`;
-    const res  = await fetch(url);
-    const data = await res.json();
-
-    let photoUrl = null;
     for (const product of (data.products || [])) {
-      const candidate = product.image_front_url || product.image_url;
-      if (candidate && candidate.startsWith('http')) {
-        photoUrl = candidate;
+      const url = product.image_front_url || product.image_url;
+      if (url && url.startsWith('http')) {
+        if (img.getAttribute('data-current') !== search) return;
+        img.src = url;
+        img.style.objectFit = 'contain';
+        OFF_CACHE[search] = url;
+        try { localStorage.setItem('off_' + search, url); } catch(e) {}
         break;
       }
     }
-
-    if (photoUrl) {
-      img.src = photoUrl;
-      img.style.objectFit = 'contain';
-      OFF_CACHE[search] = photoUrl;
-    }
-  } catch (e) {
-    // Pas de connexion → avatar par défaut reste affiché
-  } finally {
-    if (wrap) wrap.classList.add('loaded');
-  }
+  } catch(e) {}
+  finally { if (wrap) wrap.classList.add('loaded'); }
 }
 
-// Lancer le chargement des photos avec délai progressif
 document.addEventListener('DOMContentLoaded', () => {
-  const images = document.querySelectorAll('img[data-search]');
-  images.forEach((img, i) => {
-    setTimeout(() => loadProductPhoto(img), i * 100);
+  document.querySelectorAll('img[data-search]').forEach((img, i) => {
+    const cached = localStorage.getItem('off_' + img.getAttribute('data-search'));
+    if (cached) {
+      img.src = cached;
+      img.style.objectFit = 'contain';
+      const wid = img.getAttribute('data-wrapid');
+      if (wid) document.getElementById(wid)?.classList.add('loaded');
+    } else {
+      setTimeout(() => loadProductPhoto(img), i * 150);
+    }
   });
 
-  // Recherche dynamique
   document.getElementById('searchInput').addEventListener('keyup', function() {
     const f = this.value.toLowerCase();
     document.querySelectorAll('.product-row').forEach(row => {
