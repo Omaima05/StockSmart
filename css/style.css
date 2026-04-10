@@ -1,0 +1,346 @@
+/*
+ * StockSmart Pro — style.css
+ * Styles globaux partagés par toutes les pages internes
+ * Les pages internes font : <link rel="stylesheet" href="../css/style.css">
+ * Le dashboard fait     : <link rel="stylesheet" href="css/style.css">
+ */
+
+/* ── IMPORT POLICE ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── RESET & VARIABLES ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --red:          #e94560;
+  --red-light:    rgba(233, 69, 96, 0.1);
+  --dark:         #0d1117;
+  --dark2:        #161b22;
+  --mid:          #64748b;
+  --border:       #e2e8f0;
+  --light:        #f8fafc;
+  --success:      #22c55e;
+  --success-bg:   #dcfce7;
+  --success-text: #166534;
+  --warning:      #f59e0b;
+  --warning-bg:   #fef3c7;
+  --warning-text: #92400e;
+  --danger:       #e94560;
+  --danger-bg:    #fee2e2;
+  --danger-text:  #991b1b;
+  --radius:       12px;
+  --shadow:       0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-md:    0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background: var(--light);
+  color: #0d1117;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ────────────────────────────────────────────────── */
+.page-entity,
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+/* ── HEADER & NAV (styles de base pour les pages qui utilisent style.css) ── */
+header {
+  background: var(--dark);
+  color: #fff;
+  padding: 14px 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+nav {
+  background: var(--dark2);
+  padding: 0 2rem;
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+nav a {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+
+nav a:hover { color: rgba(255, 255, 255, 0.85); }
+nav a.active { background: rgba(233, 69, 96, 0.15); color: var(--red); }
+
+/* ── SECTIONS ──────────────────────────────────────────────── */
+.section {
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.section-form {
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── TITRES ────────────────────────────────────────────────── */
+.page-entity h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #0d1117;
+}
+
+.section h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #0d1117;
+}
+
+/* ── MESSAGES ──────────────────────────────────────────────── */
+.msg-success {
+  background: var(--success-bg);
+  color: var(--success-text);
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bbf7d0;
+}
+
+.msg-error {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid #fecdd3;
+}
+
+/* ── TABLEAUX ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  background: var(--light);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mid);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr {
+  border-bottom: 1px solid #f5f7fa;
+  transition: background 0.1s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #fafbff; }
+tbody td { padding: 11px 14px; font-size: 13px; vertical-align: middle; }
+
+/* ── BADGES ────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-success { background: var(--success-bg); color: var(--success-text); }
+.badge-danger  { background: var(--danger-bg);  color: var(--danger-text);  }
+.badge-warn    { background: var(--warning-bg); color: var(--warning-text); }
+.badge-ok      { background: var(--success-bg); color: var(--success-text); }
+.badge-crit    { background: var(--danger-bg);  color: var(--danger-text);  }
+
+/* ── BOUTONS ───────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.btn-primary,
+.btn-red {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-red:hover {
+  box-shadow: 0 4px 14px rgba(233, 69, 96, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-secondary,
+.btn-gray {
+  background: var(--light);
+  color: var(--mid);
+  border: 1px solid var(--border);
+}
+
+.btn-sm {
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.btn-edit   { background: #ede9fe; color: #5b21b6; }
+.btn-delete { background: var(--danger-bg); color: var(--danger-text); }
+
+/* ── FORMULAIRES ───────────────────────────────────────────── */
+.form-entity,
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.form-group,
+.fg {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label,
+.fg label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mid);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.form-group input,
+.form-group select,
+.fg input,
+.fg select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.fg input:focus,
+.fg select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.field-error {
+  color: #e94560;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ── IMAGES PRODUITS ───────────────────────────────────────── */
+.img-produit,
+.prod-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  object-fit: contain;
+  background: var(--light);
+  border: 1px solid var(--border);
+  padding: 4px;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .form-entity,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container,
+  .page-entity {
+    padding: 0 1rem;
+  }
+}
+
+/* ── ANIMATIONS ────────────────────────────────────────────── */
+@keyframes pulse-danger {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+.badge-danger {
+  animation: pulse-danger 2s infinite;
+}
+
+/* ── UTILITAIRES ───────────────────────────────────────────── */
+.text-muted  { color: var(--mid); }
+.text-danger { color: var(--danger); }
+.text-success{ color: var(--success); }
+.fw-700      { font-weight: 700; }
+.fw-800      { font-weight: 800; }
+.mt-1        { margin-top: 0.5rem; }
+.mt-2        { margin-top: 1rem; }
+.mb-1        { margin-bottom: 0.5rem; }
+.mb-2        { margin-bottom: 1rem; }
+
+/* ── FOOTER ────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+}
