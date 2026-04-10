@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modifier une Catégorie - StockSmart</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<header>
+  <h1>StockSmart Pro</h1>
+</header>
+<nav>
+  <a href="../index.php">Accueil</a>
+  <a href="produits.php">Produits</a>
+  <a href="categories.php">Catégories</a>
+  <a href="mouvements.php">Mouvements</a>
+  <a href="login.php">Connexion</a>
+</nav>
+<div class="container">
+  <h2>Modifier une catégorie</h2>
+  <div class="form-wrap">
+    <form action="categories.php" method="POST">
+      <input type="hidden" name="id" value="">
+      <div class="form-group">
+        <label for="nom">Nom de la catégorie</label>
+        <input type="text" id="nom" name="nom" placeholder="Nom de la catégorie" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" name="modifier" class="btn btn-primary">Enregistrer</button>
+        <a href="categories.php" class="btn btn-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+<footer>© 2026 StockSmart Pro</footer>
+<script src="../js/script.js"></script>
+</body>
+</html>
