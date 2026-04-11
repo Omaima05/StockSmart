@@ -226,7 +226,7 @@ $mode = $_POST['mode'] ?? $_GET['mode'] ?? '';
     <div class="field">
       <label>Nom de l'enseigne *</label>
       <input type="text" name="enseigne_nom" value="<?= h($_POST['enseigne_nom'] ?? '') ?>"
-             placeholder="Ex: Narmin, MonMarché, SuperStock..." required>
+             placeholder="Ex: Franprix, MonMarché, SuperStock..." required>
       <?php if (isset($erreurs['enseigne_nom'])): ?><span class="field-error"><?= h($erreurs['enseigne_nom']) ?></span><?php endif; ?>
     </div>
     <div class="field">
