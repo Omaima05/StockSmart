@@ -269,7 +269,7 @@ if (isset($_SESSION['user_id'])) { header('Location: dashboard.php'); exit; }
       <a href="pages/login.php" class="btn-hero-sec">Se connecter</a>
     </div>
     <div class="hero-trust a4">
-      <div class="trust-i"><svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>Sans carte bancaire</div>
+      <div class="trust-i"><svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>Données sécurisées</div>
       <div class="trust-i"><svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>5 min pour demarrer</div>
       <div class="trust-i"><svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>Multi-enseignes natif</div>
     </div>
