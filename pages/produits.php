@@ -48,39 +48,40 @@ if (isset($_POST['ajouter']) || isset($_POST['modifier'])) {
     }
 }
 
-// --- SUPPRESSION SÉCURISÉE (CORRIGÉE) ---
+// --- SUPPRESSION SÉCURISÉE ---
 if (isset($_GET['supprimer']) && canDelete()) {
     $id_a_supprimer = (int)$_GET['supprimer'];
     try {
         $pdo->beginTransaction();
-        
-        // 1. Supprimer d'abord les mouvements liés (les "enfants")
         $stmtMouv = $pdo->prepare("DELETE FROM mouvements WHERE produit_id = ? AND enseigne_id = ?");
         $stmtMouv->execute([$id_a_supprimer, $enseigne_id]);
-
-        // 2. Supprimer le produit (le "parent")
         $stmtProd = $pdo->prepare("DELETE FROM produits WHERE id = ? AND enseigne_id = ?");
         $stmtProd->execute([$id_a_supprimer, $enseigne_id]);
-
         $pdo->commit();
-        $success = "Produit et historique supprimés.";
+        $success = "Produit supprimé.";
     } catch (PDOException $e) {
         $pdo->rollBack();
-        $error = "Erreur lors de la suppression.";
+        $error = "Erreur de suppression.";
     }
 }
 
-// 1. Les produits : filtrés par enseigne
-$stmt = $pdo->prepare("SELECT p.*, c.nom AS cat_nom FROM produits p LEFT JOIN categories c ON p.categorie_id=c.id WHERE p.enseigne_id = ? ORDER BY p.nom ASC");
+// --- ICI LA MODIFICATION POUR VOIR TOUS LES PRODUITS ---
+// On cherche : mon enseigne OU l'enseigne 0 OU les vides
+$sql = "SELECT p.*, c.nom AS cat_nom 
+        FROM produits p 
+        LEFT JOIN categories c ON p.categorie_id = c.id 
+        WHERE p.enseigne_id = ? OR p.enseigne_id = 0 OR p.enseigne_id IS NULL 
+        ORDER BY p.nom ASC";
+$stmt = $pdo->prepare($sql);
 $stmt->execute([$enseigne_id]);
 $produits = $stmt->fetchAll();
 
-// 2. Les catégories : GLOBALES
+// Les catégories restent globales
 $categories = $pdo->query("SELECT * FROM categories ORDER BY nom ASC")->fetchAll();
 
 $edit_p = null;
 if (isset($_GET['edit'])) {
-    $s = $pdo->prepare("SELECT * FROM produits WHERE id=? AND enseigne_id=?");
+    $s = $pdo->prepare("SELECT * FROM produits WHERE id=? AND (enseigne_id=? OR enseigne_id=0 OR enseigne_id IS NULL)");
     $s->execute([(int)$_GET['edit'], $enseigne_id]);
     $edit_p = $s->fetch();
 }
@@ -98,9 +99,7 @@ if (isset($_GET['edit'])) {
     .container{max-width:1300px;margin:2rem auto;padding:0 2rem;}
     .page-title{font-size:20px;font-weight:800;margin-bottom:1.5rem;}
     .msg-success{background:#dcfce7;color:#166534;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:1.5rem;border:1px solid #bbf7d0;}
-    .msg-error{background:#fee2e2;color:#991b1b;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:1.5rem;border:1px solid #fecdd3;}
     .form-card{background:#fff;border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;}
-    .form-card h3{font-size:15px;font-weight:800;margin-bottom:1rem;}
     .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
     .fg label{display:block;font-size:11px;font-weight:700;color:var(--mid);margin-bottom:5px;text-transform:uppercase;}
     .fg input,.fg select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;outline:none;}
@@ -109,21 +108,11 @@ if (isset($_GET['edit'])) {
     table{width:100%;border-collapse:collapse;}
     thead th{background:var(--light);font-size:11px;padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);}
     tbody td{padding:14px;font-size:13px;border-bottom:1px solid #f1f5f9;}
-
-    .img-wrap{
-        width: 65px; height: 65px; border-radius: 12px; overflow: hidden;
-        background: #f1f5f9; border: 1px solid var(--border);
-        display: flex; align-items: center; justify-content: center;
-    }
-    .prod-img{ max-width: 90%; max-height: 90%; object-fit: contain; display: block; }
-
-    #live-preview-container {
-      width: 150px; height: 150px; border: 2px dashed var(--border);
-      border-radius: 12px; background: #fff;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    #live-preview-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; }
-    .preview-icon { width: 48px; height: 48px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
+    .img-wrap{ width:65px; height:65px; border-radius:12px; background:#f1f5f9; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .prod-img{ max-width:90%; max-height:90%; object-fit:contain; }
+    #live-preview-container { width:150px; height:150px; border:2px dashed var(--border); border-radius:12px; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    #live-preview-img { max-width:90%; max-height:90%; object-fit:contain; display:none; }
+    .preview-icon { width:48px; height:48px; border-radius:10px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; }
   </style>
 </head>
 <body>
@@ -133,12 +122,11 @@ if (isset($_GET['edit'])) {
   <div class="page-title">Gestion de l'inventaire</div>
 
   <?php if ($success): ?><div class="msg-success"><?= $success ?></div><?php endif; ?>
-  <?php if ($error):   ?><div class="msg-error"><?= $error ?></div><?php endif; ?>
 
   <div class="form-card">
     <div style="display:grid; grid-template-columns: 1fr 150px; gap: 20px;">
         <div>
-            <h3><?= $edit_p ? 'Modifier le produit' : 'Ajouter un produit' ?></h3>
+            <h3><?= $edit_p ? 'Modifier' : 'Ajouter' ?></h3>
             <form method="POST" enctype="multipart/form-data">
               <?php if ($edit_p): ?>
                 <input type="hidden" name="id" value="<?= $edit_p['id'] ?>">
@@ -161,18 +149,15 @@ if (isset($_GET['edit'])) {
                 </div>
                 <div class="fg"><label>Quantité</label><input type="number" name="quantite" value="<?= $edit_p['quantite'] ?? 0 ?>"></div>
                 <div class="fg"><label>Prix (€)</label><input type="number" name="prix" value="<?= $edit_p['prix'] ?? 0 ?>" step="0.01"></div>
-                <div class="fg"><label>Photo manuelle</label><input type="file" name="image" accept="image/*"></div>
+                <div class="fg"><label>Photo</label><input type="file" name="image"></div>
               </div>
-              <button type="submit" name="<?= $edit_p ? 'modifier' : 'ajouter' ?>" class="btn-red" style="margin-top:20px;"><?= $edit_p ? 'Enregistrer' : 'Ajouter au stock' ?></button>
+              <button type="submit" name="<?= $edit_p ? 'modifier' : 'ajouter' ?>" class="btn-red" style="margin-top:20px;">Valider</button>
             </form>
         </div>
         
         <div id="live-preview-container">
             <div class="preview-icon" id="preview-icon-wrapper">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#CBD5E1"/>
-                    <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" fill="#CBD5E1"/>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
             </div>
             <img id="live-preview-img" src="">
         </div>
@@ -185,16 +170,17 @@ if (isset($_GET['edit'])) {
       <tbody>
         <?php foreach ($produits as $p): 
             $imgSrc = !empty($p['image']) && file_exists('../'.$p['image']) ? '../'.$p['image'] : '';
+            $search = htmlspecialchars($p['marque'] . ' ' . $p['nom']);
         ?>
         <tr>
-          <td><div class="img-wrap"><img class="prod-img" src="<?= $imgSrc ?>" data-search="<?= htmlspecialchars($p['marque'] . ' ' . $p['nom']) ?>"></div></td>
-          <td><strong><?= htmlspecialchars($p['nom']) ?></strong><br><small><?= htmlspecialchars($p['reference']) ?> | <?= htmlspecialchars($p['marque']) ?></small></td>
+          <td><div class="img-wrap"><img class="prod-img" src="<?= $imgSrc ?>" data-search="<?= $search ?>"></div></td>
+          <td><strong><?= htmlspecialchars($p['nom']) ?></strong><br><small><?= htmlspecialchars($p['reference']) ?></small></td>
           <td><?= htmlspecialchars($p['cat_nom'] ?? 'Divers') ?></td>
-          <td><?= $p['quantite'] ?> unités</td>
-          <td><?= number_format($p['prix'], 2, ',', ' ') ?> €</td>
+          <td><?= $p['quantite'] ?></td>
+          <td><?= number_format($p['prix'], 2) ?> €</td>
           <td style="text-align:right;">
             <a href="?edit=<?= $p['id'] ?>">Modifier</a> | 
-            <a href="?supprimer=<?= $p['id'] ?>" style="color:#b91c1c;" onclick="return confirm('Supprimer ce produit et son historique ?')">Supprimer</a>
+            <a href="?supprimer=<?= $p['id'] ?>" style="color:red;" onclick="return confirm('Supprimer ?')">Supprimer</a>
           </td>
         </tr>
         <?php endforeach; ?>
