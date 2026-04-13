@@ -1,59 +1,74 @@
 /**
- * StockSmart Pro — Auto-photo via Open Food Facts
- * Inclure ce fichier dans produits.php ET dashboard.php
- * Usage : <img class="off-img" data-search="Jus Orange Tropicana" ...>
+ * StockSmart Pro — JS Global pour les photos
+ * CORRECTION : Gère l'effet 'contain' pour ne pas zoomer l'image
  */
 
-// Cache en mémoire pour éviter les doublons
 const OFF_CACHE = {};
 
-async function fetchProductPhoto(searchTerm, imgElement) {
-    if (!searchTerm || !imgElement) return;
+async function fetchPhoto(query, element) {
+    if (!query || query.length < 3) return;
 
     // Déjà en cache ?
-    if (OFF_CACHE[searchTerm]) {
-        imgElement.src = OFF_CACHE[searchTerm];
+    if (OFF_CACHE[query]) {
+        element.src = OFF_CACHE[query];
+        // --- FORCE LE CADRAGE ICI ---
+        element.style.objectFit = 'contain';
+        element.style.display = 'block';
         return;
     }
 
     try {
-        const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&search_simple=1&action=process&json=1&page_size=3`;
-        const res  = await fetch(url);
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=1`);
         const data = await res.json();
 
-        // Chercher la première image valide dans les 3 résultats
-        let photoUrl = null;
-        for (const product of (data.products || [])) {
-            const img = product.image_front_url || product.image_url;
-            if (img && img.startsWith('http')) {
-                photoUrl = img;
-                break;
+        if (data.products && data.products[0]) {
+            const url = data.products[0].image_front_url || data.products[0].image_url;
+            if (url) {
+                element.src = url;
+                // --- FORCE LE CADRAGE ICI AUSSI ---
+                element.style.objectFit = 'contain';
+                element.style.display = 'block';
+                OFF_CACHE[query] = url;
+                localStorage.setItem('off_' + query, url);
             }
         }
-
-        if (photoUrl) {
-            imgElement.src = photoUrl;
-            imgElement.style.objectFit = 'contain';
-            OFF_CACHE[searchTerm] = photoUrl; // mise en cache
-        }
-        // Si rien trouvé → on garde l'avatar par défaut, pas d'erreur
-
     } catch (e) {
-        // Pas de connexion ou erreur API → avatar par défaut reste
+        console.error("Erreur API OFF:", e);
     }
 }
 
-// Lancer automatiquement sur tous les éléments avec data-search
 document.addEventListener('DOMContentLoaded', () => {
-    const images = document.querySelectorAll('img[data-search]');
+    // 1. Charger les photos existantes dans le tableau
+    document.querySelectorAll('img[data-search]').forEach((img, i) => {
+        const q = img.getAttribute('data-search');
+        if (!q) return;
 
-    images.forEach((img, index) => {
-        const search = img.getAttribute('data-search');
-        if (!search) return;
-
-        // Délai progressif pour ne pas flood l'API (50ms entre chaque)
-        setTimeout(() => {
-            fetchProductPhoto(search, img);
-        }, index * 80);
+        const cached = localStorage.getItem('off_' + q);
+        if (cached) {
+            img.src = cached;
+            img.style.objectFit = 'contain';
+        } else {
+            // Petit délai pour ne pas flood l'API
+            setTimeout(() => fetchPhoto(q, img), i * 120);
+        }
     });
+
+    // 2. Gérer l'aperçu en direct pendant l'ajout
+    const iNom = document.getElementById('input_nom');
+    const iMarq = document.getElementById('input_marque');
+    const pImg = document.getElementById('live-preview-img');
+    const pTxt = document.getElementById('preview-text');
+
+    if (iNom && iMarq && pImg) {
+        const update = () => {
+            const q = (iMarq.value + " " + iNom.value).trim();
+            if (q.length > 3) {
+                fetchPhoto(q, pImg);
+                if (pTxt) pTxt.style.display = 'none';
+            }
+        };
+        // On déclenche la recherche quand on clique ailleurs
+        iNom.addEventListener('blur', update);
+        iMarq.addEventListener('blur', update);
+    }
 });

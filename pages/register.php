@@ -254,7 +254,7 @@ $mode = $_POST['mode'] ?? $_GET['mode'] ?? '';
     </div>
     <div class="field">
       <label>Email *</label>
-      <input type="email" name="email" value="<?= h($_POST['email'] ?? '') ?>" placeholder="admin@narmin.fr" required>
+      <input type="email" name="email" value="<?= h($_POST['email'] ?? '') ?>" placeholder="admin@franprix.fr" required>
       <?php if (isset($erreurs['email'])): ?><span class="field-error"><?= h($erreurs['email']) ?></span><?php endif; ?>
     </div>
     <div class="field">

@@ -1,4 +1,4 @@
-# 🚀 StockSmart Pro — Guide d'installation
+#  StockSmart Pro — Guide d'installation
 
 ## Structure du projet
 ```
