@@ -1,0 +1,433 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+
+\usepackage{tikz}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% ── Couleurs ─────────────────────────────────────────────────
+\definecolor{principal}{RGB}{26,82,118}      % bleu fonce principal
+\definecolor{secondaire}{RGB}{52,152,219}    % bleu clair accents
+\definecolor{gardefond}{RGB}{20,60,90}       % bleu tres fonce page de garde
+\definecolor{bleufonce}{RGB}{44,62,80}
+\definecolor{grisCode}{RGB}{245,245,245}
+\definecolor{grisTexte}{RGB}{100,100,100}
+\definecolor{grisLeger}{RGB}{245,248,250}
+
+% ── Titres ───────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{principal}}{\thesection.}{0.5em}{}
+  [\vspace{2pt}\textcolor{secondaire}{\hrule height 1.2pt}\vspace{4pt}]
+\titleformat{\subsection}{\large\bfseries\color{bleufonce}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape\color{grisTexte}}{\thesubsubsection}{0.5em}{}
+
+% ── En-tête / pied ───────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{grisTexte}StockSmart Pro -- Rapport de Projet}
+\fancyhead[R]{\small\color{grisTexte}Mahjoub Omaima \& Niakale Diawara}
+\fancyfoot[R]{\small\color{grisTexte}\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% ── Code ─────────────────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{grisCode},
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{secondaire},
+  tabsize=2,
+  language=PHP
+}
+
+% ── Liens ────────────────────────────────────────────────────
+\hypersetup{colorlinks=true, linkcolor=principal, urlcolor=secondaire}
+
+% ─────────────────────────────────────────────────────────────
+\begin{document}
+% ─────────────────────────────────────────────────────────────
+
+%% ════════════════════════════════════════════════════════════
+%% PAGE DE GARDE
+%% ════════════════════════════════════════════════════════════
+\begin{titlepage}
+\thispagestyle{empty}
+\newgeometry{top=0cm,bottom=0cm,left=0cm,right=0cm}
+
+% ── Bande superieure ─────────────────────────────────────────
+\setlength{\fboxsep}{0pt}
+\noindent\colorbox{gardefond}{%
+  \begin{minipage}[t][8cm][c]{\textwidth}
+    \begin{center}
+      \vspace{0.6cm}
+      {\fontsize{11}{13}\selectfont\color{secondaire}%
+        \textbf{UNIVERSITÉ Paris Nanterre}}\\[0.6cm]
+      {\fontsize{34}{40}\selectfont\bfseries\color{white}%
+        RAPPORT DE PROJET}\\[0.4cm]
+      {\fontsize{13}{15}\selectfont\color{white!70}%
+         2025/2026}
+      \vspace{0.6cm}
+    \end{center}
+  \end{minipage}%
+}\par
+\noindent\colorbox{secondaire}{%
+  \begin{minipage}[t][0.25cm]{\textwidth}
+  \end{minipage}%
+}
+
+\vspace{2.5cm}
+
+% ── Nom du projet ─────────────────────────────────────────────
+\begin{center}
+  \textcolor{secondaire}{\rule{\textwidth}{2pt}}\\[0.6cm]
+  {\fontsize{30}{36}\selectfont\bfseries\color{principal} StockSmart Pro}\\[0.5cm]
+  {\fontsize{13}{15}\selectfont\itshape\color{grisTexte}
+    Plateforme SaaS de gestion de stock multi-enseignes}\\[0.6cm]
+  \textcolor{secondaire}{\rule{\textwidth}{2pt}}
+\end{center}
+
+\vspace{2.5cm}
+
+% ── Informations ──────────────────────────────────────────────
+\begin{center}
+  \renewcommand{\arraystretch}{1.6}
+  \begin{tabular}{r l}
+    \textcolor{grisTexte}{\textbf{Réalisé par}} &
+      \textbf{Mahjoub Omaima \& Niakale Diawara} \\
+    \textcolor{grisTexte}{\textbf{Cours}} &
+      Programmation Web / Introduction PHP \\
+    \textcolor{grisTexte}{\textbf{Année universitaire}} &
+      2025 -- 2026 \\
+    \textcolor{grisTexte}{\textbf{Dépôt GitHub}} &
+      \href{https://github.com/Omaima05/StockSmart}{\color{secondaire}\texttt{github.com/Omaima05/StockSmart}} 
+  \end{tabular}
+\end{center}
+
+\vfill
+
+% ── Bande inferieure ─────────────────────────────────────────
+\noindent\colorbox{gardefond}{%
+  \begin{minipage}[b][1.5cm]{\textwidth}
+  \end{minipage}%
+}
+
+\restoregeometry
+\end{titlepage}
+
+
+%% ══════════════════════════════════════════════════════════
+%% SOMMAIRE
+%% ══════════════════════════════════════════════════════════
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+%% ══════════════════════════════════════════════════════════
+
+%% ══════════════════════════════════════════════════════════
+\section{Introduction}
+%% ══════════════════════════════════════════════════════════
+
+Dans le cadre du cours de Programmation Web portant sur l'introduction au PHP, nous avons réalisé un projet de site web dynamique. Notre choix s'est porté sur une application de gestion de stock, besoin que l'on retrouve quotidiennement dans les commerces et les entreprises.
+
+Le projet se nomme \textbf{StockSmart Pro}. Il s'agit d'une plateforme web de type SaaS (Software as a Service) permettant à plusieurs enseignes de gérer leurs stocks de manière indépendante depuis un seul système. Chaque enseigne dispose de son propre espace cloisonné, ce qui garantit la confidentialité des données entre les différents clients.
+
+L'objectif est de développer un site web dynamique en utilisant PHP 8 pour la logique serveur, MySQL pour la gestion des données, ainsi que HTML, CSS et JavaScript pour l'interface utilisateur.
+
+%% ══════════════════════════════════════════════════════════
+\section{Présentation du site}
+%% ══════════════════════════════════════════════════════════
+
+StockSmart Pro est une plateforme web dynamique conçue pour répondre à un besoin réel : gérer efficacement les stocks d'une ou plusieurs enseignes depuis un tableau de bord centralisé. L'application repose sur un principe de multi-tenant léger, c'est-à-dire que plusieurs enseignes cohabitent sur la même installation, mais chacune n'accède qu'à ses propres données. Cette séparation est garantie par le champ \texttt{enseigne\_id} filtré dans toutes les requêtes SQL.
+
+\subsection{Objectifs de l'application}
+
+L'application permet à une enseigne de créer son espace et d'inviter ses collaborateurs via un code d'invitation unique généré automatiquement. Elle centralise le catalogue produits avec référence, marque, fournisseur, catégorie et seuil d'alerte, et trace tous les mouvements de stock tels que les entrées, les ventes, les pertes, la casse et les sorties diverses. Elle alerte automatiquement lorsque la quantité d'un produit passe sous son seuil critique et offre un tableau de bord synthétique avec des indicateurs clés en temps réel. Enfin, elle récupère automatiquement les photos produits via l'API publique Open Food Facts.
+
+\subsection{Public cible}
+
+L'application s'adresse principalement aux gérants de petits commerces ou de supermarchés de taille moyenne souhaitant un outil simple, rapide à prendre en main et accessible depuis n'importe quel navigateur sans installation logicielle.
+
+%% ══════════════════════════════════════════════════════════
+\section{Fonctionnalités}
+%% ══════════════════════════════════════════════════════════
+
+Les principales fonctionnalités du site sont l'affichage des produits (SELECT), l'ajout d'un produit (INSERT), la modification d'un produit (UPDATE), la suppression d'un produit (DELETE), ainsi que l'enregistrement des mouvements de stock via un trigger SQL.
+
+\subsection{Inscription en deux étapes}
+
+L'inscription dans StockSmart Pro suit un processus en deux étapes. La première option consiste à créer une nouvelle enseigne : l'utilisateur renseigne le nom de son commerce, et un code d'invitation est généré automatiquement (par exemple CARREFOUR-2026). Il devient alors Administrateur de son enseigne. La deuxième option consiste à rejoindre une enseigne existante en saisissant le code d'invitation fourni par son responsable, ce qui enregistre l'utilisateur avec le rôle Employé et le rattache à l'enseigne correspondante.
+
+\subsection{Tableau de bord}
+
+Le tableau de bord est la page principale après connexion. Il présente quatre indicateurs clés : le nombre total de produits référencés, le nombre de catégories actives, la valeur totale du stock calculée en multipliant la quantité par le prix de chaque produit, et le nombre d'alertes de rupture correspondant aux produits dont la quantité est inférieure ou égale au seuil d'alerte défini. Le tableau de bord affiche également les stocks critiques sous forme de cartes avec photos produits, ainsi que les derniers mouvements enregistrés.
+
+\subsection{Gestion des produits et catégories}
+
+Chaque produit possède une référence, un nom, une marque, un fournisseur, une catégorie, un prix unitaire, une quantité en stock et un seuil d'alerte. Un utilisateur autorisé peut ajouter un nouveau produit via un formulaire de saisie, modifier les informations d'un produit existant, supprimer un produit du catalogue sous contrôle des droits, et rechercher dynamiquement un produit par nom ou référence sans rechargement de page grâce au JavaScript asynchrone.
+
+\subsection{Gestion des mouvements de stock}
+
+Chaque variation du stock doit être tracée à travers un mouvement. Cinq types sont pris en charge : l'entrée pour la réception de marchandise, la vente, la perte, la casse et la sortie. Un trigger SQL de type \texttt{AFTER INSERT} se déclenche automatiquement après chaque insertion dans la table mouvements et met à jour la quantité du produit concerné. La fonction \texttt{GREATEST(0, quantite - N)} est utilisée pour empêcher le stock de passer en valeur négative.
+
+\subsection{Photos automatiques via Open Food Facts}
+
+Pour les produits alimentaires, l'application récupère automatiquement une photo à partir de l'API publique Open Food Facts en JavaScript asynchrone. Un mécanisme de cache en \texttt{localStorage} évite de recharger une photo déjà connue lors d'une visite précédente. L'attribut \texttt{data-current} est utilisé pour éviter qu'une photo vienne s'afficher dans l'emplacement d'un autre produit pendant le chargement parallèle.
+
+\subsection{Gestion des rôles}
+
+Trois rôles sont définis dans l'application. L'Administrateur dispose d'un accès complet à toutes les fonctionnalités, y compris la gestion des utilisateurs. Le Gérant peut gérer les produits, les catégories et les mouvements de son enseigne. L'Employé est limité à l'enregistrement des mouvements de stock. Tous les contrôles d'accès sont centralisés dans le fichier \texttt{config.php}.
+
+\section{Conception}
+
+Cette section présente la modélisation UML de StockSmart Pro. Nous avons réalisé les trois types de diagrammes demandés : le diagramme de cas d'utilisation, le diagramme de classes et le diagramme de séquence.
+
+\subsection{Diagramme de cas d'utilisation}
+
+Le diagramme de cas d'utilisation identifie les acteurs du système et les actions qu'ils peuvent réaliser. Quatre acteurs interviennent dans StockSmart Pro : le Visiteur, l'Employé, le Gérant et l'Administrateur. Les relations entre les cas d'utilisation suivent les conventions UML : la relation \textit{include} lie S'inscrire à S'authentifier, et la relation \textit{extend} modélise les différents types de mouvements (Vente, Entrée, Casse, Perte). L'acteur API Externe représente l'intégration avec Open Food Facts pour la récupération automatique des photos produits.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{1_use_case.png}
+\caption{Diagramme de cas d'utilisation -- StockSmart Pro}
+\end{figure}
+
+\subsection{Diagramme de classes}
+
+Le diagramme de classes représente la structure statique de l'application, correspondant directement au schéma de la base de données MySQL. Cinq tables principales sont modélisées avec leurs attributs (notation UML : \texttt{+} public, \texttt{-} privé), leurs clés primaires (PK) et étrangères (FK), ainsi que leurs relations avec les multiplicités. Le trigger SQL AFTER INSERT est représenté avec sa logique complète : pour une entrée il incrémente la quantité, pour tout autre type il décrémente avec \texttt{GREATEST(0, q-N)} pour éviter tout stock négatif.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{2_classes.png}
+\caption{Schéma BDD / Diagramme de classes -- StockSmart Pro}
+\end{figure}
+
+\subsection{Diagramme de séquence}
+
+Le diagramme de séquence présente le scénario complet d'utilisation de StockSmart Pro en cinq phases chronologiques. Il montre les échanges entre l'utilisateur, la couche de sécurité \texttt{config.php}, la page \texttt{mouvements.php}, la base de données MySQL et le trigger SQL AFTER INSERT qui se déclenche automatiquement.
+
+\textbf{Pré-condition :} l'utilisateur est connecté avec le rôle Employé, Gérant ou Administrateur.
+
+\textbf{Scénario normal :} la Phase 1 vérifie les droits d'accès et charge la liste des produits de l'enseigne. La Phase 2 correspond à la saisie du mouvement. La Phase 3 effectue l'insertion en base de données. La Phase 4 est le déclenchement automatique du trigger SQL qui met à jour la quantité du produit. La Phase 5 renvoie la confirmation à l'utilisateur.
+
+\textbf{Post-condition :} le mouvement est persisté en base et la quantité du produit est mise à jour automatiquement par le trigger SQL.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{3_sequence.png}
+\caption{Diagramme de séquence -- Scénario complet StockSmart Pro}
+\end{figure}
+
+\section{Base de données}
+
+\subsection{Structure des tables}
+
+La base de données \textbf{stocksmart\_v2} est composée de cinq tables relationnelles. Les relations entre ces tables sont les suivantes : la table \texttt{utilisateurs} est rattachée à la table \texttt{enseignes} via la clé étrangère \texttt{enseigne\_id}, ce qui garantit le cloisonnement des données entre les différentes enseignes. La table \texttt{produits} est liée à la table \texttt{categories} via \texttt{categorie\_id}, et possède également une relation avec \texttt{enseignes} via \texttt{enseigne\_id} pour filtrer les produits par enseigne. Enfin, la table \texttt{mouvements} référence à la fois la table \texttt{produits} via \texttt{produit\_id} et la table \texttt{utilisateurs} via \texttt{utilisateur\_id}, afin de tracer quel utilisateur a enregistré quel mouvement sur quel produit.
+
+\begin{center}
+\begin{tabular}{|l|p{6cm}|p{3.5cm}|}
+\hline
+\textbf{Table} & \textbf{Colonnes principales} & \textbf{Description} \\
+\hline
+enseignes & id, nom, couleur, code\_invitation, actif & Client indépendant \\
+\hline
+utilisateurs & id, nom, email, mot\_de\_passe, role, enseigne\_id & Comptes avec rôle \\
+\hline
+categories & id, nom & Classification des produits \\
+\hline
+produits & id, reference, nom, categorie\_id, quantite, seuil\_alerte, prix & Catalogue par enseigne \\
+\hline
+mouvements & id, produit\_id, utilisateur\_id, type\_mouvement, quantite, date & Historique du stock \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Trigger SQL}
+
+Un trigger de type \texttt{AFTER INSERT ON mouvements} est activé automatiquement après chaque saisie de mouvement. Pour le type entrée, il incrémente la quantité du produit concerné. Pour tous les autres types, à savoir la vente, la perte, la casse et la sortie, il décrémente la quantité en utilisant la fonction \texttt{GREATEST(0, quantite - N)} afin de garantir qu'un stock ne peut jamais passer en valeur négative, ce qui serait physiquement impossible et fausserait les indicateurs du tableau de bord.
+
+\subsection{Requête SQL (exemple)}
+
+\begin{lstlisting}[language=SQL]
+SELECT p.*, c.nom AS categorie_nom
+FROM produits p
+JOIN categories c ON p.categorie_id = c.id
+WHERE p.enseigne_id = :enseigne_id
+  AND p.quantite <= p.seuil_alerte
+ORDER BY p.quantite ASC;
+\end{lstlisting}
+
+%% ══════════════════════════════════════════════════════════
+\section{Réalisation}
+%% ══════════════════════════════════════════════════════════
+
+\subsection{Connexion à la base de données}
+
+La connexion à la base de données est réalisée avec PHP et MySQL via PDO (PHP Data Objects), configuré dans le fichier \texttt{config.php}. Toutes les requêtes utilisent des paramètres liés afin de protéger l'application contre les injections SQL.
+
+\subsection{Structure du projet}
+
+\begin{verbatim}
+StockSmart/
+|-- index.php              <- Landing page publique
+|-- dashboard.php          <- Tableau de bord avec KPIs
+|-- config.php             <- BDD + fonctions securite
+|-- _nav.php               <- Navigation partagee
+|-- css/style.css          <- Styles globaux
+|-- js/script.js           <- JavaScript global
+|-- js/off-photos.js       <- API Open Food Facts
+|-- assets/img/            <- Images du site
+|-- stocksmart_v2.sql      <- Base de donnees complete
+|-- migration_v2.sql       <- Migration colonnes
+`-- pages/
+    |-- login.php
+    |-- register.php
+    |-- produits.php
+    |-- categories.php
+    |-- mouvements.php
+    `-- admin.php
+\end{verbatim}
+
+\subsection{Développement}
+
+Nous avons développé les fonctionnalités suivantes : l'affichage des produits avec PHP, le formulaire d'ajout, la modification et la suppression des données, l'enregistrement des mouvements de stock avec trigger SQL, la récupération automatique des photos via l'API JavaScript, ainsi que le système de rôles avec contrôles d'accès centralisés dans \texttt{config.php}.
+
+\subsection{Technologies utilisées}
+
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Technologie} & \textbf{Usage} \\
+\hline
+PHP 8 & Logique serveur, sessions, traitement des formulaires \\
+MySQL & Stockage des données, trigger SQL anti-stock négatif \\
+HTML5 / CSS3 & Structure et design (variables CSS, responsive, DM Sans) \\
+JavaScript ES6+ & API Open Food Facts, cache localStorage, recherche dynamique \\
+PDO (PHP) & Requêtes préparées, protection contre les injections SQL \\
+XAMPP / Apache & Serveur de développement local \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Comptes de démonstration}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Email} & \textbf{Mot de passe} & \textbf{Rôle / Enseigne} \\
+\hline
+admin@stocksmart.pro & password & Administrateur -- Carrefour Paris-Est \\
+thomas@carrefour.fr  & password & Employé -- Carrefour Paris-Est \\
+marc@leclerc.fr      & password & Gérant -- Leclerc Lyon \\
+\hline
+\end{tabular}
+\end{center}
+
+%% ══════════════════════════════════════════════════════════
+\section{Interface du site}
+%% ══════════════════════════════════════════════════════════
+
+Le site contient une landing page publique présentant le service ainsi qu'une page de connexion et d'inscription en deux étapes. Après authentification, l'utilisateur accède à un tableau de bord avec les KPIs, les alertes de rupture et l'activité récente. Des pages dédiées permettent de gérer les produits, les catégories et les mouvements de stock. Enfin, un panneau d'administration est accessible uniquement aux utilisateurs ayant le rôle Administrateur.
+% N'oublie pas d'ajouter \usepackage{float} dans ton préambule tout en haut du fichier
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Capture d’écran 2026-04-29 à 21.55.43.png}
+    \caption{Interface du Tableau de Bord - Vue d'ensemble}
+    \label{fig:produits}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Capture d’écran 2026-04-29 à 21.54.50.png}
+    \caption{Gestion du catalogue produits et catégories}
+    \label{fig:dashboard}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Capture d’écran 2026-04-29 à 21.56.37.png}
+    \caption{Formulaire d'enregistrement d'un mouvement de stock}
+    \label{fig:mouvement}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Capture d’écran 2026-04-29 à 21.56.50.png}
+    \caption{Page d'administration et gestion des utilisateurs}
+    \label{fig:admin}
+\end{figure}
+%% ══════════════════════════════════════════════════════════
+\section{Difficultés rencontrées}
+%% ══════════════════════════════════════════════════════════
+
+Nous avons rencontré plusieurs difficultés au cours du développement de StockSmart Pro.
+
+\subsection{Cloisonnement des données multi-enseignes}
+
+La principale difficulté conceptuelle était de s'assurer que chaque utilisateur ne voit que les données de son enseigne, et ce sur chaque page et chaque requête SQL. Nous avons résolu ce problème en stockant l'\texttt{enseigne\_id} en session à la connexion et en l'injectant dans toutes les requêtes PDO préparées.
+
+\subsection{Photos asynchrones et conflits d'affichage}
+
+Le chargement des photos via l'API Open Food Facts en JavaScript asynchrone posait un problème délicat : les callbacks de réponse arrivaient dans un ordre imprévisible et une photo pouvait s'afficher dans l'emplacement d'un autre produit. Nous avons résolu ce problème en ajoutant un attribut \texttt{data-current} sur chaque élément image, servant de jeton pour vérifier que la réponse reçue correspond bien au produit attendu avant de mettre à jour le DOM.
+
+\subsection{Trigger SQL et gestion du stock négatif}
+
+La mise en place du trigger SQL a nécessité plusieurs essais. Au départ, certains mouvements en sortie pouvaient faire passer le stock en valeur négative. L'ajout de \texttt{GREATEST(0, quantite - N)} dans le calcul a permis de garantir qu'un stock ne peut jamais descendre sous zéro, quelle que soit la quantité saisie.
+
+\subsection{Gestion des sessions et redirections}
+
+La gestion des sessions PHP entre les différentes pages a demandé une organisation rigoureuse. Nous avons centralisé tous les contrôles d'accès dans \texttt{config.php} avec les fonctions \texttt{requireLogin()}, \texttt{isAdmin()}, \texttt{canEdit()} et \texttt{canDelete()}, appelées en début de chaque page protégée, ce qui a simplifié le code et réduit les risques d'oubli.
+
+\subsection{Problème d'accès à phpMyAdmin et réinstallation complète}
+
+L'une des difficultés les plus bloquantes que nous avons rencontrées concernait l'accès au site en local. À un moment donné, phpMyAdmin est devenu inaccessible et nous ne parvenions plus à nous connecter à la base de données, ce qui rendait l'ensemble de l'application non fonctionnel. Après plusieurs tentatives de correction, notamment la vérification des ports, le redémarrage des services Apache et MySQL dans le panneau XAMPP et la modification des fichiers de configuration, aucune solution n'a permis de rétablir le fonctionnement normal. Nous avons donc pris la décision de désinstaller complètement XAMPP, de supprimer tous les fichiers résiduels, puis de tout réinstaller proprement depuis zéro. Suite à la réinstallation, nous avons réimporté la base de données via les fichiers \texttt{stocksmart\_v2.sql} et \texttt{migration\_v2.sql}, et le site est redevenu pleinement fonctionnel. Cette expérience nous a appris l'importance de sauvegarder régulièrement ses fichiers SQL.
+
+\subsection{Récupération incomplète des photos via l'API Open Food Facts}
+
+L'une des difficultés les plus visibles dans l'interface concernait la récupération automatique des photos produits via l'API Open Food Facts. Le système ne fonctionnait pas de manière uniforme : certains produits très connus, comme le Kinder Bueno, affichaient bien leur photo automatiquement, mais pour la grande majorité des produits saisis, aucune image n'apparaissait. Cela s'explique par le fait que l'API Open Food Facts est une base de données communautaire : elle ne recense pas tous les produits, et les photos ne sont disponibles que pour ceux qui ont été enregistrés par la communauté. Lorsqu'un produit n'est pas référencé dans la base, la requête JavaScript ne renvoie aucun résultat et l'emplacement image reste vide. Dans ce cas, nous devions ajouter la photo manuellement, ce qui représentait une charge de travail supplémentaire et nuisait à l'expérience utilisateur. Pour pallier ce problème, nous avons affiché une image par défaut lorsque la récupération automatique échoue, afin que le tableau de bord reste visuellement cohérent même sans photo.
+
+%% ══════════════════════════════════════════════════════════
+\section{Conclusion}
+%% ══════════════════════════════════════════════════════════
+
+Ce projet nous a permis de comprendre le fonctionnement d'un site web dynamique, la connexion entre PHP et MySQL, les opérations CRUD, la gestion de sessions multi-rôles, l'utilisation des triggers SQL pour garantir l'intégrité des données, et la consommation d'une API externe en JavaScript asynchrone.
+
+StockSmart Pro est une application fonctionnelle qui répond à un besoin réel. Elle gère correctement le cloisonnement des données entre plusieurs enseignes, propose un système de rôles cohérent et offre une interface professionnelle avec un design soigné. La collaboration entre les deux membres du binôme a été productive et bien organisée tout au long du projet.
+
+\subsection{Améliorations possibles}
+
+Plusieurs pistes d'amélioration pourraient être envisagées pour la suite. Il serait intéressant d'ajouter un système de notifications par e-mail lors du dépassement du seuil d'alerte, de générer des rapports PDF sur l'historique des mouvements, de mettre en place une API REST pour une future application mobile, d'implémenter une authentification à double facteur pour renforcer la sécurité, et de proposer un hébergement cloud pour permettre un accès distant depuis n'importe où.
+
+%% ══════════════════════════════════════════════════════════
+\section{Bibliographie}
+%% ══════════════════════════════════════════════════════════
+
+\begin{itemize}
+  \item Documentation officielle PHP 8 : \url{https://www.php.net/manual/fr/}
+  \item Documentation MySQL : \url{https://dev.mysql.com/doc/}
+  \item API Open Food Facts : \url{https://fr.openfoodfacts.org/data}
+  \item Google Fonts -- DM Sans : \url{https://fonts.google.com/specimen/DM+Sans}
+  \item MDN Web Docs : \url{https://developer.mozilla.org/fr/}
+  \item Cours Programmation Web / Introduction PHP (support fourni par l'enseignante)
+  \item Cours Méthodologies de Conception UML -- Chapitre 3 : Diagramme de Classe (support fourni)
+  \item Exemple de Conception Application Web (document fourni par l'enseignante)
+\end{itemize}
+
+\end{document}
